@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Gerador de Config</title>
+</head>
+
+<script src="teste.js"></script>
+
+<script type="application/javascript"> 
+
+    function getElementById(id) {
+        return document.getElementById(id)
+    }
+
+    function createElement(type) {
+        return document.createElement(type);
+    }
+
+    function add(initKey = '', initValue = '') {
+        const total = getElementById('total');
+        const idNumber = total.value++;
+        
+        const config = getElementById('config');
+
+        const bloco = createElement('div');
+        bloco.id = 'div_' + idNumber;
+        bloco.append('');
+
+        const chave = createElement('input');
+        chave.type = 'text';
+        chave.id = 'key_' + idNumber;
+        chave.value = initKey;
+
+        const valor = createElement('input');
+        valor.type = 'text';
+        valor.id = 'value_' +idNumber;
+        valor.value = initValue;
+
+        const remove = createElement('button');
+        remove.id = 'remove_' + idNumber;
+        remove.append('Remove');
+        remove.onclick = () => this.remove(bloco.id);
+
+        const multiValue = createElement('button');
+        multiValue.id = 'multivalue_' + idNumber;
+        multiValue.append('Multi Value');
+        multiValue.onclick = () => this.addArray(valor);
+
+        bloco.append(chave);
+        bloco.append(valor);
+        bloco.append(multiValue); 
+        bloco.append(remove);
+
+        config.append(bloco);
+    }
+
+    function addArray(valor) {
+        console.table(valor);
+        valor.id = 'div_' + 12;
+        valor.value = 'Jajaja';
+
+        const array = createElement('input');
+        array.type = 'text';
+
+        return array;
+    }
+
+    function remove(id) {
+        document.getElementById(id).remove();
+    }
+
+    function generate() {
+        const configItems = getElementById('config').children;
+        const resp = getElementById('resp');
+        const jason = {};
+
+        for(item of configItems) {
+            const valores = item.children;
+            const key = valores[0].value;
+            const value = valores[1].value;
+
+            if( key && value ) {
+                jason[key] = value;
+            }
+        }
+
+        resp.innerText= '';
+        resp.append(JSON.stringify(jason));
+    }
+
+    function clearTree() {
+        const configItems = [...getElementById('config').children];
+        getElementById('resp').innerText = '';
+
+        for(item of configItems) {
+            item.remove();
+        }
+    }
+
+    function createTree(init = null) {
+        const loaded = init || {"llll":"oooo"};
+        clearTree();
+
+        Object.entries(loaded).forEach(([key, value]) => {
+            add(key, value);
+        });
+
+        this.generate();
+    } 
+
+</script>
+
+<body>
+
+	<header>
+		<nav>
+            <h1>Gerando algo</h1>
+		</nav>
+	</header>
+	
+	<section>
+        
+        <button onclick="add()">Add</button>
+        <button onclick="generate()">Generate</button>
+        <button onclick="createTree()">Import</button>
+        <button onclick="clearTree()">Clear</button>
+
+        <div id="config">
+        </div>
+
+        <dialog open id="resp"></dialog>
+
+        <input type="hidden" value="0" id="total">
+		
+	</section>
+
+</body>
+
+</html>
